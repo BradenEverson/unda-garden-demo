@@ -1,5 +1,5 @@
 use esp_idf_svc::hal::delay::FreeRtos;
-use esp_idf_unda::network::network::Network;
+use esp_idf_unda::network::{activations::Activations, network::Network};
 
 fn main() {
     // It is necessary to call this function once. Otherwise some patches to the runtime
@@ -9,13 +9,15 @@ fn main() {
     // Bind the log crate to the ESP Logging facilities
     esp_idf_svc::log::EspLogger::initialize_default();
 
-    //Serialized models can be loaded here either from explicity Unda string or file if board has an SD card slot
-    let model_str = "";
-    let model = Network::deserialize_unda_fmt_string(model_str.into()); 
+    let water_model_str = "";
+    let water_model = Network::deserialize_unda_fmt_string(water_model_str.into(), esp_idf_unda::network::activations::Activations::SIGMOID); 
 
-    //Collect params from IO and generate inferences!
+    let sun_model_str = "";
+    let sun_model = Network::deserialize_unda_fmt_string(sun_model_str.into(), Activations::SIGMOID);
+
     loop {
         log::info!("Model Inference:");
         FreeRtos::delay_ms(5000);
     }
 }
+
