@@ -51,6 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             &vec![sunlight_percent, wetness, days_since])[0];
         if water_inf >= 0.9 {
             //Water plant
+
             plant_watered = true;
         } else {
             plant_watered = false;
