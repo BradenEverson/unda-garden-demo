@@ -18,13 +18,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut light_sensor: AdcChannelDriver<{attenuation::DB_11}, _> = AdcChannelDriver::new(peripherals.pins.gpio5)?;
 
 
-    //let sun_model_str = "";
+    let sun_model_str = "";
     let water_model_str = "";
 
-    //let mut sun_model = Network::deserialize_unda_fmt_string(sun_model_str.into(), Activations::SIGMOID);
+    let mut sun_model = Network::deserialize_unda_fmt_string(sun_model_str.into(), Activations::SIGMOID);
     let mut water_model = Network::deserialize_unda_fmt_string(water_model_str.into(), esp_idf_unda::network::activations::Activations::SIGMOID); 
 
     let mut days_since = 0f32;
+    let mut time_in_sun = 0f32;
+    let mut shaded = false;
     let mut plant_watered = false;
 
     const DELAY_TIME: u32 = 100;//60 * 60 * 1000;
@@ -53,6 +55,15 @@ fn main() -> Result<(), Box<dyn Error>> {
             plant_watered = true;
         } else {
             plant_watered = false;
+        }
+
+        //Make sun inference
+        let sun_inf = sun_model.predict(
+            &vec![sunlight_percent, wetness, time_in_sun]
+        )[0];
+
+        if sun_inf > 0.7 {
+            //Move servo
         }
 
         //If we didn't do an operation, reset counter
