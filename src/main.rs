@@ -58,7 +58,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut time_since_shade = Instant::now();
 
-    const DELAY_TIME: u32 = /*100;*/60 * 60 * 1000;
+    const DELAY_TIME: u32 = 60 * 60 * 1000;
 
     loop {
         //get water val
@@ -75,6 +75,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         //Make watering inference
         let water_inf = water_model.predict(
             &vec![sunlight_percent, wetness, days_since / 10f32])[0];
+
         if water_inf > 0.6 {
             //Water plant
             relay.set_low()?;
@@ -99,7 +100,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             time_in_sun = 0f32;
             
         } else if shaded {
-
             let total_sun_time = Instant::now().duration_since(time_since_shade);
             if total_sun_time.as_millis() >= 300000 {
                 move_to(&mut driver, 210..30, min_limit, max_limit)?;
