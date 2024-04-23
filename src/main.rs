@@ -54,7 +54,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut days_since = 0f32;
     let mut time_in_sun = 0f32;
     let mut shaded: bool = false;
-    let mut plant_watered = false;
+    let mut plant_watered;
 
     let mut time_since_shade = Instant::now();
 
@@ -73,10 +73,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         let sunlight_percent = 1f32 - (sunlight as f32 / 3038f32);
 
         //Make watering inference
-        /*let water_inf = water_model.predict(
+        let water_inf = water_model.predict(
             &vec![sunlight_percent, wetness, days_since / 10f32])[0];
-        */
-        if true {
+        if water_inf > 0.6 {
             //Water plant
             relay.set_low()?;
             FreeRtos::delay_ms(500);
@@ -97,6 +96,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             move_to(&mut driver, 30..200, min_limit, max_limit)?;
             shaded = true;
             time_since_shade = Instant::now();
+            time_in_sun = 0f32;
             
         } else if shaded {
 
@@ -106,6 +106,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 shaded = false;
             }
 
+        }
+
+        if !shaded {
+            time_in_sun += 1f32 / 24f32;
         }
 
         //If we didn't do an operation, reset counter
