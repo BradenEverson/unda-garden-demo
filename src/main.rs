@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     FreeRtos::delay_ms(2000);
 
-    move_to(&mut driver, 30..210, min_limit, max_limit)?;
+    //move_to(&mut driver, 30..210, min_limit, max_limit)?;
 
     //return Ok(());
 
